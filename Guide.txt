@@ -1,0 +1,52 @@
+WHAT YOU'LL FIND IN THIS REPOSITORY
+
+dVRL_ReachKidney:
+
+Is the folder with the environment and code to test the latest place task.
+Contains everything for testing out the task where the EE already has the
+rail grasped and lays it flat on the kidney's surface.
+
+Folder: dVRL_simulator contains the main code and environment image.
+
+File: reach_control.py is the demonstrations file to check the EE places the rail correctly on the kidney.
+
+File: setup.py is the setup file to install and register the environment to Gym.
+
+The environment name is inside dVRL_simulator.__init__.py and currently is "ReachRailKidney-v1".
+
+Timesteps are set to 150 because the trained agent shakes a little while moving so its better to allow
+it to have more time to perform the task. 
+
+NOTE: the height of the RCM_PSM1 is set to [z = +8.4879e-01]. This is the height of Pick + 5cm. 
+	Why: because this way the EE in initial position is always above the kidney and placing the rail is simpler.
+
+-------------------------------------------------------------------------------------------------------------------
+
+dVRL_PickPlace:
+
+Is the folder with the environment and code to test the full pick and place task.
+It contains useful things not present in dVRL_ReachKidney's code, like:
+(1) randomisation of the Kidney with the Rail and EE, without collisions, using the inflated kidney hull.
+(2) scene of the whole setup.
+
+HOWEVER: it has not yet been implemented to run/train a task of pick and place smoothly. 
+The code currently has the following issues: 
+(1)The LND does not open, because with one IK target only half of the ToolTip follows the target. I decided
+together with Mario Selvaggio to keep it close altogether. Mario's scene and child script to solve this was sent to Claudia on Skype (Drive folder).
+(2)The simulation reset SOMETIMES (weird) doesn't seem to work the first time you run it. The second time and so on it works everytime. I tried
+to check the issue with debugging, but it doesn't happen at all when debugging. I don't know. 
+What's the issue? The reset should guarantee objects do not collide, but sometimes they do.
+(3)Although I used the same configuration and code, currently, once the Rail is grasped, the orientation control doesn't set it
+parallel to the kidney's surface. Need to understand why, since I copied the same things from dVRL_ReachKidney, where it works.
+(4)Although dynamics is active, respondable bodies still permeate when colliding.
+
+(SUGGESTION)I think we should pick the rail, bring it back to initial_pos, then place it on the kidney. This way
+we avoid the risk of permeating the kidney, because from the top view, the kidney is simply below and you can
+place the Rail on it from the top down. 
+
+NOTE: dynamics is currently active and the respondable body for the Rail is currently the Rail itself, although it is a complex shape.
+If you want to work with a cuboid shape that approximates the rail, use image dVRK-oneArm-pick_res.ttt
+Res means respondable and the code in simObjects.py needs to uncomment the stuff about such object to actually use it. 
+The cuboid approximating the rail is called self.rail_res_handle = self.getHandle('rail_respondable')
+
+For anything, follow the comments or ask a question at neri.dei@stud.unifi.it
